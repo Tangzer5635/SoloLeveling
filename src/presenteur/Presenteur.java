@@ -1,5 +1,6 @@
 package presenteur;
 
+import models.entities.dao.DaoFields.DaoFields;
 import models.entities.entity.FactoryEntity;
 import models.entities.entity.Hunter;
 import models.entities.entity.Monster;
@@ -230,7 +231,7 @@ public class Presenteur {
         int choixHunter = view.choisirHunter(hunters);
         Hunter hunter = hunters.get(choixHunter - 1);
 
-        List<String> menuAction = List.of("Ajouter un équipement", "Ajouter un item");
+        List<String> menuAction = List.of("Ajouter un équipement", "Ajouter un item", "Supprimer");
         view.afficherMenuModification(menuAction, "MODIFIER " + hunter.getName());
 
         int choixAction = view.saisirChoixMenu(menuAction.size());
@@ -238,9 +239,15 @@ public class Presenteur {
         switch (choixAction) {
             case 1 -> ajouterEquipementAuHunter(hunter);
             case 2 -> ajouterItemAuHunter(hunter);
+            case 3 -> supprimerHunter(hunter);
             default -> {
             }
         }
+    }
+
+    private void supprimerHunter(Hunter hunter) {
+        view.afficherMessage("Le hunter "+hunter.getName()+" a bien été supprimé !");
+        model.supprimerHunter(hunter);
     }
 
     private void ajouterEquipementAuHunter(Hunter hunter) {
@@ -300,7 +307,8 @@ public class Presenteur {
                 "Changer le nom",
                 "Changer le level",
                 "Ajouter un loot potion",
-                "Ajouter un loot équipement"
+                "Ajouter un loot équipement",
+                "Supprimer"
         );
 
         view.afficherMenuModification(menuAction, "MODIFIER " + monster.getName());
@@ -311,6 +319,7 @@ public class Presenteur {
             case 2 -> changerLevelMonster(monster);
             case 3 -> ajouterPotionAuMonster(monster);
             case 4 -> ajouterEquipementAuMonster(monster);
+            case 5 -> supprimerMonster(monster);
             default -> {
             }
         }
@@ -412,6 +421,11 @@ public class Presenteur {
         }
     }
 
+    private void supprimerMonster(Monster monster){
+        view.afficherMessage("Le monstre "+monster.getName()+" a bien été supprimé !");
+        model.supprimerMonster(monster);
+    }
+
     private void editDungeon() {
         List<Dungeon> dungeons = model.recupererDungeons();
 
@@ -426,7 +440,8 @@ public class Presenteur {
         List<String> menuAction = List.of(
                 "Changer le nom",
                 "Changer le boss",
-                "Changer le rang"
+                "Changer le rang",
+                "Supprimer"
         );
 
         view.afficherMenuModification(menuAction, "MODIFIER " + dungeon.getName());
@@ -436,6 +451,7 @@ public class Presenteur {
             case 1 -> changerNomDungeon(dungeon);
             case 2 -> changerBossDungeon(dungeon);
             case 3 -> changerRangDungeon(dungeon);
+            case 4 -> supprimerDungeon(dungeon);
             default -> {
             }
         }
@@ -498,5 +514,10 @@ public class Presenteur {
         } catch (DungeonException e) {
             view.afficherMessage("Erreur lors de la modification du rang du donjon : " + e.getMessage());
         }
+    }
+
+    private void supprimerDungeon(Dungeon dungeon){
+        view.afficherMessage("Le donjons "+dungeon.getName()+" a bien été supprimé !");
+        model.supprimerDungeon(dungeon);
     }
 }

@@ -6,6 +6,7 @@ import models.entities.fields.Dungeon;
 import models.referencies.Rank;
 import models.referencies.TypeEquipement;
 import models.referencies.TypePotion;
+import views.utils.Jframe.AffichageJFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,89 +15,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ViewJFrameImpl extends JFrame implements IView {
-    private static final String TITRE_APPLICATION = "Solo Levelling";
-
-    private static final Color COULEUR_FOND = new Color(8, 10, 24);
-    private static final Color COULEUR_PANNEAU = new Color(15, 18, 42);
-    private static final Color COULEUR_BOUTON = new Color(42, 36, 110);
-    private static final Color COULEUR_BOUTON_SURVOL = new Color(82, 67, 190);
-    private static final Color COULEUR_TEXTE = new Color(230, 235, 255);
-    private static final Color COULEUR_ACCENT = new Color(95, 175, 255);
-    private static final Color COULEUR_VIOLET = new Color(155, 90, 255);
-
-    private final JLabel titreLabel = new JLabel("MENU PRINCIPAL", SwingConstants.CENTER);
-    private final JPanel menuPanel = new JPanel();
-    private final JTextArea zoneAffichage = new JTextArea();
-    private final JPanel saisiePanel = new JPanel();
-    private final JPanel actionsPanel = new JPanel(new BorderLayout(10, 10));
-
+public class ViewJFrameImpl extends AffichageJFrame implements IView {
     private List<String> dernierMenu;
     private String dernierTitreMenu;
 
     public ViewJFrameImpl() {
-        initialiserFenetre();
-    }
-
-    private void initialiserFenetre() {
-        setTitle(TITRE_APPLICATION);
-        setSize(1050, 720);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(12, 12));
-        getContentPane().setBackground(COULEUR_FOND);
-
-        titreLabel.setFont(new Font("Arial", Font.BOLD, 34));
-        titreLabel.setForeground(COULEUR_ACCENT);
-        titreLabel.setOpaque(true);
-        titreLabel.setBackground(COULEUR_FOND);
-        titreLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 2, 0, COULEUR_VIOLET),
-                BorderFactory.createEmptyBorder(18, 10, 18, 10)
-        ));
-
-        menuPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 12, 12));
-        menuPanel.setBackground(COULEUR_PANNEAU);
-        menuPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COULEUR_ACCENT, 2),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-
-        zoneAffichage.setEditable(false);
-        zoneAffichage.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        zoneAffichage.setLineWrap(true);
-        zoneAffichage.setWrapStyleWord(true);
-        zoneAffichage.setBackground(new Color(5, 7, 18));
-        zoneAffichage.setForeground(COULEUR_TEXTE);
-        zoneAffichage.setCaretColor(COULEUR_TEXTE);
-        zoneAffichage.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
-
-        JScrollPane scrollPane = new JScrollPane(zoneAffichage);
-        scrollPane.setBorder(BorderFactory.createLineBorder(COULEUR_VIOLET, 2));
-        scrollPane.getViewport().setBackground(new Color(5, 7, 18));
-
-        saisiePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 12, 12));
-        saisiePanel.setBackground(COULEUR_PANNEAU);
-        saisiePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COULEUR_VIOLET, 2),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-
-        actionsPanel.setBackground(COULEUR_FOND);
-        actionsPanel.setBorder(BorderFactory.createEmptyBorder(0, 12, 12, 12));
-        actionsPanel.add(menuPanel, BorderLayout.CENTER);
-        actionsPanel.add(saisiePanel, BorderLayout.SOUTH);
-
-        JPanel mainPanel = new JPanel(new BorderLayout(12, 12));
-        mainPanel.setBackground(COULEUR_FOND);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(titreLabel, BorderLayout.NORTH);
-        add(mainPanel, BorderLayout.CENTER);
-        add(actionsPanel, BorderLayout.SOUTH);
-
-        setVisible(true);
+        super();
     }
 
     @Override
@@ -674,32 +598,6 @@ public class ViewJFrameImpl extends JFrame implements IView {
         attendre(attente);
     }
 
-    private void afficherHeader(String titre) {
-        zoneAffichage.append("============================================================\n");
-        zoneAffichage.append("  " + titre + "\n");
-        zoneAffichage.append("============================================================\n");
-    }
-
-    private void afficherCarteDebut(String titre) {
-        zoneAffichage.append("\n");
-        zoneAffichage.append("------------------------------------------------------------\n");
-        zoneAffichage.append("  " + titre + "\n");
-        zoneAffichage.append("------------------------------------------------------------\n");
-    }
-
-    private void afficherCarteFin() {
-        zoneAffichage.append("------------------------------------------------------------\n\n");
-    }
-
-    private void afficherLigneInfo(String label, Object valeur) {
-        zoneAffichage.append("  " + String.format("%-16s", label) + ": " + valeur + "\n");
-    }
-
-    private void afficherSection(String titre) {
-        zoneAffichage.append("\n");
-        zoneAffichage.append("  " + titre.toUpperCase() + "\n");
-        zoneAffichage.append("  ------------------------------\n");
-    }
 
     private String indenterTexte(String texte) {
         if (texte == null || texte.isBlank()) {
@@ -776,53 +674,6 @@ public class ViewJFrameImpl extends JFrame implements IView {
 
         attendre(attente);
         return valeur.get();
-    }
-
-    private JButton creerBoutonMenu(String texte) {
-        JButton bouton = new JButton(texte);
-        bouton.setFocusPainted(false);
-        bouton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        bouton.setFont(new Font("Arial", Font.BOLD, 15));
-        bouton.setForeground(COULEUR_TEXTE);
-        bouton.setBackground(COULEUR_BOUTON);
-        bouton.setPreferredSize(new Dimension(210, 46));
-        bouton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COULEUR_ACCENT, 2),
-                BorderFactory.createEmptyBorder(10, 18, 10, 18)
-        ));
-
-        bouton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                bouton.setBackground(COULEUR_BOUTON_SURVOL);
-                bouton.setForeground(Color.WHITE);
-                bouton.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(COULEUR_VIOLET, 2),
-                        BorderFactory.createEmptyBorder(10, 18, 10, 18)
-                ));
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                bouton.setBackground(COULEUR_BOUTON);
-                bouton.setForeground(COULEUR_TEXTE);
-                bouton.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(COULEUR_ACCENT, 2),
-                        BorderFactory.createEmptyBorder(10, 18, 10, 18)
-                ));
-            }
-        });
-
-        return bouton;
-    }
-
-    private void rafraichirPanels() {
-        menuPanel.revalidate();
-        menuPanel.repaint();
-        saisiePanel.revalidate();
-        saisiePanel.repaint();
-        zoneAffichage.revalidate();
-        zoneAffichage.repaint();
     }
 
     private void attendre(CountDownLatch attente) {

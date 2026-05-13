@@ -1,10 +1,11 @@
 package models.entities.items;
 
+import models.entities.AbstractEntity;
 import models.referencies.Rank;
 
 import java.util.Objects;
 
-public class Item {
+public class Item extends AbstractEntity {
     private String nom;
     private float weight;
     private double value;
@@ -59,22 +60,6 @@ public class Item {
         this.rang = rang;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Float.compare(weight, item.weight) == 0
-                && Double.compare(value, item.value) == 0
-                && Objects.equals(nom, item.nom)
-                && Objects.equals(rarity, item.rarity)
-                && rang == item.rang;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nom, weight, value, rarity, rang);
-    }
-
     public String sePresenter() {
         return "%s de rang %s qui vaut valeur %f".formatted(
                 getNom(),
@@ -92,5 +77,18 @@ public class Item {
                 .entrySet().stream()
                 .map(entry -> " %d x %s ".formatted(entry.getValue(), entry.getKey()))
                 .collect(java.util.stream.Collectors.joining(" | ", "", ""));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Item item = (Item) o;
+        return Float.compare(weight, item.weight) == 0 && Double.compare(value, item.value) == 0 && Objects.equals(nom, item.nom) && Objects.equals(rarity, item.rarity) && rang == item.rang;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), nom, weight, value, rarity, rang);
     }
 }

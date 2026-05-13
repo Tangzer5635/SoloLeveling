@@ -1,11 +1,12 @@
 package models.entities.entity;
 
+import models.entities.AbstractEntity;
 import models.exception.EntityException;
 import models.referencies.Rank;
 
 import java.util.Objects;
 
-public abstract class Entity {
+public abstract class Entity extends AbstractEntity {
     private String name;
     private double power;
     private Rank rang;
@@ -54,12 +55,13 @@ public abstract class Entity {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Entity entity = (Entity) o;
-        return Objects.equals(name, entity.name);
+        return Double.compare(power, entity.power) == 0 && Objects.equals(name, entity.name) && rang == entity.rang;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name);
+        return Objects.hash(super.hashCode(), name, power, rang);
     }
 }

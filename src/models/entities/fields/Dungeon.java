@@ -1,5 +1,6 @@
 package models.entities.fields;
 
+import models.entities.AbstractEntity;
 import models.entities.entity.Monster;
 import models.exception.DungeonException;
 import models.referencies.Rank;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Dungeon {
+public class Dungeon extends AbstractEntity {
     private String name;
     private Monster boss;
     private Map<Monster, Integer> monsters = new HashMap<>();
@@ -107,12 +108,13 @@ public class Dungeon {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Dungeon dungeon = (Dungeon) o;
-        return Objects.equals(name, dungeon.name) && Objects.equals(boss, dungeon.boss) && rang == dungeon.rang;
+        return Objects.equals(name, dungeon.name) && Objects.equals(boss, dungeon.boss) && Objects.equals(monsters, dungeon.monsters) && rang == dungeon.rang;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, boss, rang);
+        return Objects.hash(super.hashCode(), name, boss, monsters, rang);
     }
 }

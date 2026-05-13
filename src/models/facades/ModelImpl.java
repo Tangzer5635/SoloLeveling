@@ -1,5 +1,9 @@
 package models.facades;
 
+import models.entities.dao.Dao;
+import models.entities.dao.DaoEntity.*;
+import models.entities.dao.DaoFields.DaoFields;
+import models.entities.dao.DaoFields.DaoFieldsImpl;
 import models.entities.entity.FactoryEntity;
 import models.entities.entity.Hunter;
 import models.entities.entity.Monster;
@@ -15,15 +19,17 @@ import models.referencies.Rank;
 import models.referencies.TypeEquipement;
 import models.referencies.TypePotion;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ModelImpl implements IModel {
     private static final List<Hunter> HUNTERS = new ArrayList<>();
     private static final List<Monster> MONSTERS = new ArrayList<>();
     private static final List<Dungeon> DUNGEONS = new ArrayList<>();
+
+    DaoEntity daoEntity = new DaoEntityImpl();
+    DaoHunter daoHunter = new DaoHunterImpl();
+    MonsterDao daoMonster = new MonsterDaoImpl();
+    DaoFields daoFields = new DaoFieldsImpl();
 
     public ModelImpl() {
         try {
@@ -33,11 +39,7 @@ public class ModelImpl implements IModel {
         }
     }
 
-    private static void init() throws EntityException, MonsterException, DungeonException {
-        HUNTERS.clear();
-        MONSTERS.clear();
-        DUNGEONS.clear();
-
+    private void init() throws EntityException, MonsterException, DungeonException {
         // HUNTERS
         Hunter hunter = FactoryEntity.createHunter("Sung Jin-Woo", 9999, Rank.SS);
 
@@ -80,7 +82,8 @@ public class ModelImpl implements IModel {
         hunter.addNewItems(potionSoin);
         hunter.addNewItems(potionMana);
 
-        HUNTERS.add(hunter);
+        daoHunter.create(hunter);
+//        HUNTERS.add(hunter);
 
         // MONSTRES
         Monster monarque = FactoryEntity.createMonster(
@@ -95,60 +98,70 @@ public class ModelImpl implements IModel {
                 List.of(dagueKasaka)
         );
 
-        MONSTERS.add(monarque);
-        MONSTERS.add(igris);
+//        MONSTERS.add(monarque);
+//        MONSTERS.add(igris);
 
+        daoMonster.create(monarque);
+        daoMonster.create(igris);
         // DONJONS
-        DUNGEONS.add(FactoryFields.createDungeon(
+        Dungeon dungeon = FactoryFields.createDungeon(
                 "Hapjeong Subway Station",
                 monarque,
                 Map.of(monarque, 1, igris, 3),
                 Rank.E
-        ));
+        );
+
+        daoFields.create(dungeon);
+//        DUNGEONS.add(dungeon);
+
+
     }
 
     @Override
     public List<Hunter> recupererHunters() {
-        return Collections.unmodifiableList(HUNTERS);
+        return daoHunter.recupererHunters();
+//        return Collections.unmodifiableList(HUNTERS);
     }
 
     @Override
     public List<Monster> recupererMonsters() {
-        return Collections.unmodifiableList(MONSTERS);
+        return daoMonster.recupererMonsters();
+//        return Collections.unmodifiableList(MONSTERS);
     }
 
     @Override
     public List<Dungeon> recupererDungeons() {
-        return Collections.unmodifiableList(DUNGEONS);
+        return daoFields.recupererDungeons();
+//        return Collections.unmodifiableList(DUNGEONS);
     }
 
     @Override
     public void ajouterHunter(Hunter hunter) {
-        HUNTERS.add(hunter);
+        daoHunter.create(hunter);
     }
 
     @Override
     public void ajouterMonster(Monster monster) {
-        MONSTERS.add(monster);
+        daoMonster.create(monster);
     }
 
     @Override
     public void ajouterDungeon(Dungeon dungeon) {
-        DUNGEONS.add(dungeon);
+        daoFields.create(dungeon);
     }
 
     @Override
     public void supprimerHunter(Hunter hunter) {
-        HUNTERS.remove(hunter);
+        daoHunter.delete(hunter.getId());
     }
 
     @Override
     public void supprimerMonster(Monster monster) {
-        MONSTERS.remove(monster);
+        daoMonster.delete(monster.getId());
     }
 
     @Override
     public void supprimerDungeon(Dungeon dungeon) {
-        DUNGEONS.remove(dungeon);
+        daoFields.delete(dungeon.getId());
     }
 }
